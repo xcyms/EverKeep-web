@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useUserStore } from '../store/user'
+
 interface MenuItem {
   key?: string
   label: string
@@ -38,6 +40,7 @@ const menuItems: MenuItem[] = [
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 
 // 菜单状态
 const selectedKeys = ref<string[]>([route.path])
@@ -84,6 +87,17 @@ const handleMenuClick = (e: any) => {
   if (key && key.startsWith('/') && !key.startsWith('sub-')) {
     router.push(key)
   }
+}
+
+const handleUserMenuClick = ({ key }: { key: string }) => {
+  if (key === 'logout') {
+    handleLogout()
+  }
+}
+
+const handleLogout = () => {
+  userStore.logout()
+  router.replace('/login')
 }
 </script>
 
@@ -165,10 +179,10 @@ const handleMenuClick = (e: any) => {
               <span class="text-xs font-medium">Lewis</span>
             </div>
             <template #overlay>
-              <a-menu class="w-32">
-                <a-menu-item><div class="flex items-center gap-2 text-xs"><div class="i-ant-design:user-outlined" /> 个人中心</div></a-menu-item>
+              <a-menu class="w-32" @click="({ key }) => handleUserMenuClick({ key: String(key) })">
+                <a-menu-item key="profile"><div class="flex items-center gap-2 text-xs"><div class="i-ant-design:user-outlined" /> 个人中心</div></a-menu-item>
                 <a-menu-divider />
-                <a-menu-item danger><div class="flex items-center gap-2 text-xs"><div class="i-ant-design:poweroff-outlined" /> 退出</div></a-menu-item>
+                <a-menu-item key="logout" danger><div class="flex items-center gap-2 text-xs"><div class="i-ant-design:poweroff-outlined" /> 退出</div></a-menu-item>
               </a-menu>
             </template>
           </a-dropdown>

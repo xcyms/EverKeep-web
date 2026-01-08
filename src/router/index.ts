@@ -3,6 +3,8 @@ import { setupLayouts } from 'virtual:generated-layouts'
 import generatedRoutes from 'virtual:generated-pages'
 import { createRouter, createWebHistory } from 'vue-router'
 import 'nprogress/nprogress.css'
+import { useUserStore } from '../store/user'
+
 
 const routes = setupLayouts(generatedRoutes)
 
@@ -17,8 +19,22 @@ const router = createRouter({
   routes, // 使用自动生成的路由
 })
 
-router.beforeEach(() => {
+router.beforeEach((to, _from, next) => {
   nprogress.start()
+  
+  const userStore = useUserStore()
+  const publicPages = ['/login', '/error/404', '/500', '/401']
+  const authRequired = !publicPages.includes(to.path)
+
+  if (authRequired && !userStore.isLoggedIn) {
+    return next('/login')
+  }
+
+  if (to.path === '/login' && userStore.isLoggedIn) {
+    return next('/')
+  }
+
+  next()
 })
 
 router.afterEach(() => {
