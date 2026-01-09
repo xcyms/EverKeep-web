@@ -30,11 +30,6 @@ export default defineConfig({
     'i-fa6-solid:bell',
     'i-fa6-solid:user',
     'i-fa6-solid:power-off',
-    // 图片页面图标
-    'i-fa6-solid:check',
-    'i-fa6-solid:circle-info',
-    'i-fa6-solid:folder-open',
-    'i-fa6-solid:trash-can',
   ],
   transformers: [
     transformerDirectives(), // 支持 @apply 等指令
